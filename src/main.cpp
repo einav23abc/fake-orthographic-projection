@@ -13,7 +13,7 @@ int main ( int argc , char *argv[] ) {
     Uint32 frameStart;
     int frameTime;
 
-    window = new Window( "window name" , 100 , 100 , 600 , 400 , 300 , 200 , true, false );
+    window = new Window( "window name" , 100 , 100 , 600 , 300 , 300 , 150 , true, false );
 
 
     while ( window->running() ){

@@ -9,6 +9,7 @@ typedef struct point {
 } point_t;
 typedef struct {
     bool collided;
+    int reason;
     point_t point;
 } lineCollResult_t;
 
@@ -20,7 +21,7 @@ class Line {
         double b,m,x;
         double minx,maxx,miny,maxy;
         bool isYparl;
-        
+        bool infinite;
         static lineCollResult_t* collision( Line* line1 , Line* line2 );
         static long double getXatY( Line* line , long double y );
         static long double getYatX( Line* line , long double x );
