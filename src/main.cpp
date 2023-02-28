@@ -13,7 +13,7 @@ int main ( int argc , char *argv[] ) {
     Uint32 frameStart;
     int frameTime;
 
-    window = new Window( "window name" , 100 , 100 , 600 , 300 , 300 , 150 , true, false );
+    window = new Window( "window name" , 100 , 100 , 600 , 300 , 160 , 90 , true, false );
 
 
     while ( window->running() ){
@@ -24,6 +24,7 @@ int main ( int argc , char *argv[] ) {
         window->render();
 
         frameTime = SDL_GetTicks() - frameStart;
+        std::cout << "dt:" << frameTime-FRAME_DELAY << "\n";
         if ( FRAME_DELAY > frameTime ){
             SDL_Delay( FRAME_DELAY - frameTime );
         };

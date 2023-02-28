@@ -25,6 +25,7 @@ class Window {
         int width, height;
         int mouseX, mouseY;
         void listenToMousePressEvent( void* listner , eventFunct_t funcptr );
+        void listenToMouseReleaseEvent( void* listner , eventFunct_t funcptr );
         void listenToKeyDownEvent( void* listner , eventFunct_t funcptr );
         void listenToKeyUpEvent( void* listner , eventFunct_t funcptr );
     private:
@@ -32,14 +33,22 @@ class Window {
         LinkedListNode<eventFunct_t>* mousePressEventListenFuncListTail = nullptr;
         LinkedListNode<void*>* mousePressEventListenListnerList = nullptr;
         LinkedListNode<void*>* mousePressEventListenListnerListTail = nullptr;
+        
+        LinkedListNode<eventFunct_t>* mouseReleaseEventListenFuncList = nullptr;
+        LinkedListNode<eventFunct_t>* mouseReleaseEventListenFuncListTail = nullptr;
+        LinkedListNode<void*>* mouseReleaseEventListenListnerList = nullptr;
+        LinkedListNode<void*>* mouseReleaseEventListenListnerListTail = nullptr;
+        
         LinkedListNode<eventFunct_t>* keyDownEventListenFuncList = nullptr;
         LinkedListNode<eventFunct_t>* keyDownEventListenFuncListTail = nullptr;
         LinkedListNode<void*>* keyDownEventListenListnerList = nullptr;
         LinkedListNode<void*>* keyDownEventListenListnerListTail = nullptr;
+
         LinkedListNode<eventFunct_t>* keyUpEventListenFuncList = nullptr;
         LinkedListNode<eventFunct_t>* keyUpEventListenFuncListTail = nullptr;
         LinkedListNode<void*>* keyUpEventListenListnerList = nullptr;
         LinkedListNode<void*>* keyUpEventListenListnerListTail = nullptr;
+
         bool isRunning;
         SDL_Window* window;
         void* app; /* supose to be (App*) app */

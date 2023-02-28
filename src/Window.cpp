@@ -1,5 +1,4 @@
 
-
 Window::Window( const char* title , int xpos , int ypos , int _width , int _height , int minWidth , int minHeight , bool resizable , bool fullscreen ){
     this->width = _width;
     this->height = _height;
@@ -64,8 +63,13 @@ void Window::handleEvents(){
                 currentListner = currentListner->getNext();
             };
         }else if( event.type == SDL_MOUSEBUTTONUP ){
-            if ( event.button.button == SDL_BUTTON_LEFT ){
-                
+            LinkedListNode<eventFunct_t>* currentFunc = mouseReleaseEventListenFuncList;
+            LinkedListNode<void*>* currentListner = mouseReleaseEventListenListnerList;
+            while( currentFunc != nullptr && currentListner != nullptr ){
+                eventFunct_t func = currentFunc->getValue();
+                func( currentListner->getValue() , &event );
+                currentFunc = currentFunc->getNext();
+                currentListner = currentListner->getNext();
             };
         }else if ( event.type == SDL_KEYDOWN ){
             //std::cout << SDL_GetKeyName( event.key.keysym.sym ) << std::endl;
@@ -170,6 +174,20 @@ void Window::listenToMousePressEvent( void* listner , eventFunct_t funcptr ){
         mousePressEventListenFuncListTail = mousePressEventListenFuncList;
         mousePressEventListenListnerList = new LinkedListNode<void*>(listner);
         mousePressEventListenListnerListTail = mousePressEventListenListnerList;
+        return;
+    };
+    mousePressEventListenFuncListTail->setNext( new LinkedListNode<eventFunct_t>(funcptr) );
+    mousePressEventListenFuncListTail = mousePressEventListenFuncListTail->getNext();
+    mousePressEventListenListnerListTail->setNext( new LinkedListNode<void*>(listner) );
+    mousePressEventListenListnerListTail = mousePressEventListenListnerListTail->getNext();
+    return;
+};
+void Window::listenToMouseReleaseEvent( void* listner , eventFunct_t funcptr ){
+    if ( mouseReleaseEventListenFuncList == nullptr ){
+        mouseReleaseEventListenFuncList = new LinkedListNode<eventFunct_t>(funcptr);
+        mouseReleaseEventListenFuncListTail = mouseReleaseEventListenFuncList;
+        mouseReleaseEventListenListnerList = new LinkedListNode<void*>(listner);
+        mouseReleaseEventListenListnerListTail = mouseReleaseEventListenListnerList;
         return;
     };
     mousePressEventListenFuncListTail->setNext( new LinkedListNode<eventFunct_t>(funcptr) );

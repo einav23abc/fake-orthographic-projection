@@ -6,95 +6,73 @@ App::App( Window* parentWindow ){
 
     this->parentWindow->listenToKeyDownEvent( (void*)this , (eventFunct_t)&(App::keyDownEvent) );
     this->parentWindow->listenToKeyUpEvent( (void*)this , (eventFunct_t)&(App::keyUpEvent) );
-
-    this->cam.x = 0;
-    this->cam.y = 0;
-    this->cam.z = 0;
+    this->parentWindow->listenToMousePressEvent( (void*)this , (eventFunct_t)&(App::mousePressEvent) );
+    this->parentWindow->listenToMouseReleaseEvent( (void*)this , (eventFunct_t)&(App::mouseReleaseEvent) );
 
     for ( int i = 0; i < 256; i++ ){
         this->keys[i] = false;
     };
 
-    this->points[0].x = 0; this->points[0].y = 0; this->points[0].z = 0;
-    this->points[1].x = 0; this->points[1].y = 0; this->points[1].z = 10;
-    this->points[2].x = 5; this->points[2].y = 2.5; this->points[2].z = 20;
-    this->points[3].x = 45; this->points[3].y = 0; this->points[3].z = 0;
-    this->points[4].x = 42.5; this->points[4].y = 2.5; this->points[4].z = 10;
-    this->points[5].x = 37.5; this->points[5].y = 0; this->points[5].z = 10;
-    this->points[6].x = 30; this->points[6].y = 2.5; this->points[6].z = 20;
-    this->points[7].x = 0; this->points[7].y = 20; this->points[7].z = 0;
-    this->points[8].x = 0; this->points[8].y = 20; this->points[8].z = 10;
-    this->points[9].x = 5; this->points[9].y = 17.5; this->points[9].z = 20;
-    this->points[10].x = 45; this->points[10].y = 20; this->points[10].z = 0;
-    this->points[11].x = 42.5; this->points[11].y = 17.5; this->points[11].z = 10;
-    this->points[12].x = 37.5; this->points[12].y = 20; this->points[12].z = 10;
-    this->points[13].x = 30; this->points[13].y = 17.5; this->points[13].z = 20;
+    this->cam.rotation = 0;
+    this->cam.zoom = 5;
+    this->cam.rot_pos.x = 0;
+    this->cam.rot_pos.y = 0;
+    this->cam.rot_pos.z = 0;
+    this->cam.pos_rot_pos_dist = 100;
 
-    this->triangles[0].color = SDL_Color{255,0,0,255};      this->triangles[0].p1 = 5; this->triangles[0].p2 = 0; this->triangles[0].p3 = 3;
-    this->triangles[1].color = SDL_Color{255,10,10,255};    this->triangles[1].p1 = 4; this->triangles[1].p2 = 5; this->triangles[1].p3 = 3;
-    this->triangles[2].color = SDL_Color{255,20,20,255};    this->triangles[2].p1 = 0; this->triangles[2].p2 = 5; this->triangles[2].p3 = 1;
-    this->triangles[3].color = SDL_Color{255,30,30,255};    this->triangles[3].p1 = 5; this->triangles[3].p2 = 2; this->triangles[3].p3 = 1;
-    this->triangles[4].color = SDL_Color{255,40,40,255};    this->triangles[4].p1 = 2; this->triangles[4].p2 = 5; this->triangles[4].p3 = 6;
-    this->triangles[5].color = SDL_Color{255,50,50,255};    this->triangles[5].p1 = 7; this->triangles[5].p2 = 12; this->triangles[5].p3 = 10;
-    this->triangles[6].color = SDL_Color{255,60,60,255};    this->triangles[6].p1 = 12; this->triangles[6].p2 = 11; this->triangles[6].p3 = 10;
-    this->triangles[7].color = SDL_Color{255,70,70,255};    this->triangles[7].p1 = 12; this->triangles[7].p2 = 7; this->triangles[7].p3 = 8;
-    this->triangles[8].color = SDL_Color{255,80,80,255};    this->triangles[8].p1 = 9; this->triangles[8].p2 = 12; this->triangles[8].p3 = 8;
-    this->triangles[9].color = SDL_Color{255,90,90,255};    this->triangles[9].p1 = 12; this->triangles[9].p2 = 9; this->triangles[9].p3 = 13;
-    this->triangles[10].color = SDL_Color{255,100,100,255}; this->triangles[10].p1 = 4; this->triangles[10].p2 = 11; this->triangles[10].p3 = 5;
-    this->triangles[11].color = SDL_Color{255,110,110,255}; this->triangles[11].p1 = 11; this->triangles[11].p2 = 12; this->triangles[11].p3 = 5;
-    this->triangles[12].color = SDL_Color{255,120,120,255}; this->triangles[12].p1 = 3; this->triangles[12].p2 = 10; this->triangles[12].p3 = 4;
-    this->triangles[13].color = SDL_Color{255,130,130,255}; this->triangles[13].p1 = 10; this->triangles[13].p2 = 11; this->triangles[13].p3 = 4;
-    this->triangles[14].color = SDL_Color{255,140,140,255}; this->triangles[14].p1 = 5; this->triangles[14].p2 = 12; this->triangles[14].p3 = 6;
-    this->triangles[15].color = SDL_Color{255,150,150,255}; this->triangles[15].p1 = 12; this->triangles[15].p2 = 13; this->triangles[15].p3 = 6;
-    this->triangles[16].color = SDL_Color{255,160,160,255}; this->triangles[16].p1 = 6; this->triangles[16].p2 = 13; this->triangles[16].p3 = 2;
-    this->triangles[17].color = SDL_Color{255,170,170,255}; this->triangles[17].p1 = 13; this->triangles[17].p2 = 9; this->triangles[17].p3 = 2;
-    this->triangles[18].color = SDL_Color{255,180,180,255}; this->triangles[18].p1 = 7; this->triangles[18].p2 = 0; this->triangles[18].p3 = 1;
-    this->triangles[19].color = SDL_Color{255,190,190,255}; this->triangles[19].p1 = 8; this->triangles[19].p2 = 7; this->triangles[19].p3 = 1;
-    this->triangles[20].color = SDL_Color{255,200,200,255}; this->triangles[20].p1 = 8; this->triangles[20].p2 = 1; this->triangles[20].p3 = 2;
-    this->triangles[21].color = SDL_Color{255,210,210,255}; this->triangles[21].p1 = 9; this->triangles[21].p2 = 8; this->triangles[21].p3 = 2;
-    for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-        this->triangles[i].color = SDL_Color{30,20,180,255};
+    // model_t floor;
+    // floor.points_amount = 8;
+    // floor.points = (f3point_t*)calloc( floor.points_amount , sizeof(f3point_t) );
+    // floor.points[0] = f3point_t{ 0 , 0 , 0 };
+    // floor.points[1] = f3point_t{ 10 , 0 , 0 };
+    // floor.points[2] = f3point_t{ 0 , 10 , 0 };
+    // floor.points[3] = f3point_t{ 10 , 10 , 0 };
+    // floor.points[4] = f3point_t{ 0 , 0 , 10 };
+    // floor.points[5] = f3point_t{ 10 , 0 , 10 };
+    // floor.points[6] = f3point_t{ 0 , 10 , 10 };
+    // floor.points[7] = f3point_t{ 10 , 10 , 10 };
+    // floor.triangles_amount = 12;
+    // floor.triangles = (triangle_t*)calloc( floor.triangles_amount , sizeof(triangle_t) );
+    // floor.triangles[0] = triangle_t{ 0 , 1 , 5 , 1 };
+    // floor.triangles[1] = triangle_t{ 0 , 5 , 4 , 1 };
+    // floor.triangles[2] = triangle_t{ 2 , 0 , 6 , 1 };
+    // floor.triangles[3] = triangle_t{ 6 , 0 , 4 , 1 };
+    // floor.triangles[4] = triangle_t{ 1 , 3 , 5 , 1 };
+    // floor.triangles[5] = triangle_t{ 5 , 3 , 7 , 1 };
+    // floor.triangles[6] = triangle_t{ 3 , 2 , 6 , 1 };
+    // floor.triangles[7] = triangle_t{ 3 , 6 , 7 , 1 };
+    // floor.triangles[8] = triangle_t{ 1 , 0 , 2 , 1 };
+    // floor.triangles[9] = triangle_t{ 3 , 1 , 2 , 1 };
+    // floor.triangles[10]= triangle_t{ 4 , 5 , 6 , 1 };
+    // floor.triangles[11]= triangle_t{ 5 , 7 , 6 , 1 };
+    // models = new LinkedListNode<model_t>( floor );
+
+    srand(1);
+
+    model_t floor;
+    const int floor_size = 30;
+    floor.points_amount = floor_size*floor_size;
+    floor.points = (f3point_t*)calloc( floor.points_amount , sizeof(f3point_t) );
+    for ( int y = 0; y < floor_size; y++ ){
+        for ( int x = 0; x < floor_size; x++ ){
+            floor.points[y*floor_size+x].x = x-floor_size*0.5;
+            floor.points[y*floor_size+x].y = y-floor_size*0.5;
+            floor.points[y*floor_size+x].z = ((float)(rand()%100))/60;
+        };
     };
-
-    // calculating triangles' normals   using formula from: https://stackoverflow.com/questions/19350792/calculate-normal-of-a-single-triangle-in-3d-space
-    for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-        point_t A;
-        A.x = this->points[this->triangles[i].p2].x - this->points[this->triangles[i].p1].x;
-        A.y = this->points[this->triangles[i].p2].y - this->points[this->triangles[i].p1].y;
-        A.z = this->points[this->triangles[i].p2].z - this->points[this->triangles[i].p1].z;
-        point_t B;
-        B.x = this->points[this->triangles[i].p3].x - this->points[this->triangles[i].p1].x;
-        B.y = this->points[this->triangles[i].p3].y - this->points[this->triangles[i].p1].y;
-        B.z = this->points[this->triangles[i].p3].z - this->points[this->triangles[i].p1].z;
-        this->triangles[i].normal.x = A.y * B.z - A.z * B.y;
-        this->triangles[i].normal.y = A.z * B.x - A.x * B.z;
-        this->triangles[i].normal.z = A.x * B.y - A.y * B.x;
-        {/* for drawing triangles' normals
-            this->points[POINTS_AMOUNT+i].x = (this->points[this->triangles[i].p1].x+this->points[this->triangles[i].p2].x+this->points[this->triangles[i].p3].x)/3 + this->triangles[i].normal.x/20;
-            this->points[POINTS_AMOUNT+i].y = (this->points[this->triangles[i].p1].y+this->points[this->triangles[i].p2].y+this->points[this->triangles[i].p3].y)/3 + this->triangles[i].normal.y/20;
-            this->points[POINTS_AMOUNT+i].z = (this->points[this->triangles[i].p1].z+this->points[this->triangles[i].p2].z+this->points[this->triangles[i].p3].z)/3 + this->triangles[i].normal.z/20;
-        */};
-
-        if ( this->triangles[i].normal.x != 0 || this->triangles[i].normal.y != 0 ){
-            long double a = atan(this->triangles[i].normal.y/this->triangles[i].normal.x);
-            this->triangles[i].color.r = this->triangles[i].color.r/(M_PI_2+10)*(a+10);
-            this->triangles[i].color.g = this->triangles[i].color.g/(M_PI_2+10)*(a+10);
-            this->triangles[i].color.b = this->triangles[i].color.b/(M_PI_2+10)*(a+10);
+    floor.triangles_amount = (floor_size-1)*(floor_size-1)*2;
+    floor.triangles = (triangle_t*)calloc( floor.triangles_amount , sizeof(triangle_t) );
+    for ( int y = 0; y < (floor_size-1); y++ ){
+        for ( int x = 0; x < (floor_size-1); x++ ){
+            floor.triangles[y*(floor_size-1)+x] = triangle_t{ y*floor_size+x , y*floor_size+(x+1) , (y+1)*floor_size+x , 1 };
+            floor.triangles[y*(floor_size-1)+x +(floor_size-1)*(floor_size-1)] = triangle_t{ (y+1)*floor_size+(x+1) , (y+1)*floor_size+x , y*floor_size+(x+1) , 1 };
+            // floor.triangles[y*9+x +(floor_size-1)*(floor_size-1)*2] = triangle_t{ y*10+x , (y+1)*10+(x+1) , (y+1)*10+x , 1 };
+            // floor.triangles[y*9+x +(floor_size-1)*(floor_size-1)*3] = triangle_t{ (y+1)*10+(x+1) , y*10+x , y*10+(x+1) , 1 };
         };
-
-        long double a = atan(this->triangles[i].normal.z/sqrt(pow(this->triangles[i].normal.x,2)+pow(this->triangles[i].normal.y,2)));
-        if ( this->triangles[i].normal.z == 0 ){
-            a = 0;
-        };
-        this->triangles[i].color.r = this->triangles[i].color.r/(M_PI_2+10)*(a+10);
-        this->triangles[i].color.g = this->triangles[i].color.g/(M_PI_2+10)*(a+10);
-        this->triangles[i].color.b = this->triangles[i].color.b/(M_PI_2+10)*(a+10);
     };
-    {/* for drawing triangles' normals
-        for( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-            this->triangles_colors[i] = this->triangles[i].color;
-        };
-    */};
+    models = new LinkedListNode<model_t>( floor );
+
+
     return;
 };
 
@@ -105,105 +83,211 @@ App::~App(){
 void App::Render(){
     SDL_SetRenderDrawColor( this->renderer , 61 , 61 , 61 , 255 );
     SDL_RenderClear(this->renderer);
-
-    //SDL_SetRenderDrawColor( this->parentWindow->renderer , 255 , 0 , 0 , 255 );
-    for ( int i = 0; i < POINTS_AMOUNT/*+TRIANGLES_AMOUNT*/; i++ ){
-        //SDL_RenderDrawPoint( this->parentWindow->renderer , this->points[i].x , this->points[i].y );
-        point_t down;
-        down.x = this->cam.x+cos(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2)*this->points[i].z;
-        down.y = this->cam.y+sin(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2)*this->points[i].z;
-        point_t up;
-        up.x = this->cam.x+cos(this->cam.z-M_PI_2)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2)*this->points[i].z;
-        up.y = this->cam.y+sin(this->cam.z-M_PI_2)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2)*this->points[i].z;
-        Line* camLine = new Line( down , up , true );
-        point_t pointRight;
-        pointRight.x = this->points[i].x+cos(this->cam.z)*VIEWPORT_WIDTH/2;
-        pointRight.y = this->points[i].y+sin(this->cam.z)*VIEWPORT_WIDTH/2;
-        point_t pointLeft;
-        pointLeft.x = this->points[i].x+cos(this->cam.z+M_PI)*VIEWPORT_WIDTH/2;
-        pointLeft.y = this->points[i].y+sin(this->cam.z+M_PI)*VIEWPORT_WIDTH/2;
-        Line* pointLine = new Line( pointRight , pointLeft , true );
-        lineCollResult_t* linesColl = Line::collision( camLine , pointLine );
-        if ( linesColl->collided == true ){
-            long double xOnCanvas;
-            long double yOnCanvas;
-            if ( this->cam.z-M_PI <= 0.0001 && this->cam.z-M_PI >= -0.0001 ){
-                xOnCanvas = (linesColl->point.x - this->points[i].x)+VIEWPORT_WIDTH/2;
-                yOnCanvas = (this->cam.y - linesColl->point.y)+VIEWPORT_HEIGHT/2-this->points[i].z;
-            }else if ( this->cam.z-M_PI_2 <= 0.0001 && this->cam.z-M_PI_2 >= -0.0001 ){
-                xOnCanvas = (this->points[i].y - this->cam.y)+VIEWPORT_WIDTH/2;
-                yOnCanvas = (this->cam.x - linesColl->point.x)+VIEWPORT_HEIGHT/2-this->points[i].z;
-            }else if ( this->cam.z-M_PI_2*3 <= 0.0001 && this->cam.z-M_PI_2*3 >= -0.0001 ){
-                xOnCanvas = (this->cam.y - this->points[i].y)+VIEWPORT_WIDTH/2;
-                yOnCanvas = (linesColl->point.x - this->cam.x)+VIEWPORT_HEIGHT/2-this->points[i].z;
-            }else{
-                xOnCanvas = (this->points[i].x - linesColl->point.x)/cos(this->cam.z)+VIEWPORT_WIDTH/2;
-                yOnCanvas = (linesColl->point.y - this->cam.y)/cos(this->cam.z)+VIEWPORT_HEIGHT/2-this->points[i].z;
-            };
-            this->pointsOnCanvas[i].x = (xOnCanvas/VIEWPORT_WIDTH)*OUTPUT_CANVAS_WIDTH;
-            this->pointsOnCanvas[i].y = (yOnCanvas/VIEWPORT_HEIGHT)*OUTPUT_CANVAS_HEIGHT;
-        }else{
-            std::cout << "{" << linesColl->point.x << "," << linesColl->point.y << "," << linesColl->reason << "}\n";
-            std::cout << "y=" << camLine->m << "x+" << camLine->b << " {" << camLine->minx << "<x<" << camLine->maxx << "," << camLine->miny << "<y<" << camLine->maxy << "}\n";
-            std::cout << "y=" << pointLine->m << "x+" << pointLine->b << " {" << pointLine->minx << "<x<" << pointLine->maxx << "," << pointLine->miny << "<y<" << pointLine->maxy << "}\n";
-            std::cout << "did not collide!!!\n";
-        };
-        free( linesColl );
-        delete pointLine;
-        delete camLine;
-    };
-
-    // calculating depth
-    for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-        //this->triangles[i].depth = std::max( std::max( this->pointsOnCanvas[this->triangles[i].p1].y+(this->points[this->triangles[i].p1].z/VIEWPORT_HEIGHT)*OUTPUT_CANVAS_HEIGHT , this->pointsOnCanvas[this->triangles[i].p2].y+(this->points[this->triangles[i].p2].z/VIEWPORT_HEIGHT)*OUTPUT_CANVAS_HEIGHT ) , this->pointsOnCanvas[this->triangles[i].p3].y+(this->points[this->triangles[i].p3].z/VIEWPORT_HEIGHT)*OUTPUT_CANVAS_HEIGHT );
-        //this->triangles[i].depth += (std::max( std::max( this->points[this->triangles[i].p1].z , this->points[this->triangles[i].p2].z ) , this->points[this->triangles[i].p3].z )/VIEWPORT_HEIGHT)*OUTPUT_CANVAS_HEIGHT;
-        this->triangles[i].depth = sqrt(
-            pow( (this->cam.x+cos(this->cam.z+M_PI_2)*1000) - (this->points[this->triangles[i].p1].x+this->points[this->triangles[i].p2].x+this->points[this->triangles[i].p3].x)/3 ,2) +
-            pow( (this->cam.y+sin(this->cam.z+M_PI_2)*1000) - (this->points[this->triangles[i].p1].y+this->points[this->triangles[i].p2].y+this->points[this->triangles[i].p3].y)/3 ,2) +
-            pow( 1000 - (this->points[this->triangles[i].p1].z+this->points[this->triangles[i].p2].z+this->points[this->triangles[i].p3].z)/3 ,2)
-        );
-    };
-    // sort triangles
-    for ( int i = TRIANGLES_AMOUNT-1; i >= 1; i-- ){
-        for ( int j = 0; j < i; j++ ){
-            if ( this->triangles[j].depth < this->triangles[j+1].depth ){
-                triangle_t tmp1 = (this->triangles[j]);
-                triangle_t tmp2 = (this->triangles[j+1]);
-                this->triangles[j] = tmp2;
-                this->triangles[j+1] = tmp1;
-            };
-        };
-    };
-    {/* print this->triangles
-        for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-            std::cout << "{p1:" << this->triangles[i].p1 << ",p2:" << this->triangles[i].p2 << ",p3:" << this->triangles[i].p3 << ",depth:" << this->triangles[i].depth << ",color:" << this->triangles[i].color.r%255 << "}\n";
-        };
-        std::cout << "\n";
-    */};
-
-    // drawing triangles
-    for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-        SDL_Vertex verts[3] = {
-            SDL_FPoint{ (float)(this->pointsOnCanvas[this->triangles[i].p1].x), (float)(this->pointsOnCanvas[this->triangles[i].p1].y) }, this->triangles[i].color, SDL_FPoint{ 0 , 0 },
-            SDL_FPoint{ (float)(this->pointsOnCanvas[this->triangles[i].p2].x), (float)(this->pointsOnCanvas[this->triangles[i].p2].y) }, this->triangles[i].color, SDL_FPoint{ 0 , 0 },
-            SDL_FPoint{ (float)(this->pointsOnCanvas[this->triangles[i].p3].x), (float)(this->pointsOnCanvas[this->triangles[i].p3].y) }, this->triangles[i].color, SDL_FPoint{ 0 , 0 },
-        };
-        SDL_RenderGeometry( this->renderer, nullptr, verts, 3, nullptr, 0 );
-    };
-
-     //drawing points
     SDL_SetRenderDrawColor( this->renderer , 255 , 255 , 255 , 255 );
-    for ( int i = 0; i < POINTS_AMOUNT; i++ ){
-        SDL_RenderDrawPoint( this->renderer , this->pointsOnCanvas[i].x , this->pointsOnCanvas[i].y );
-    };
-    {/* for drawing triangles' normals
-        for ( int i = 0; i < TRIANGLES_AMOUNT; i++ ){
-            SDL_SetRenderDrawColor( this->renderer , this->triangles_colors[i].r , this->triangles_colors[i].g , this->triangles_colors[i].b , this->triangles_colors[i].a );
-            SDL_RenderDrawPoint( this->renderer , this->pointsOnCanvas[POINTS_AMOUNT+i].x , this->pointsOnCanvas[POINTS_AMOUNT+i].y );
+
+    const float cosr_z = cos(this->cam.rotation)*this->cam.zoom;
+    const float sinr_z = sin(this->cam.rotation)*this->cam.zoom;
+    const float origin_x = OUTPUT_CANVAS_WIDTH/2 - ( cosr_z*this->cam.rot_pos.x - sinr_z*this->cam.rot_pos.y )*OUTPUT_X_MODIFIER;
+    const float origin_y = OUTPUT_CANVAS_HEIGHT/2 - ( sinr_z*this->cam.rot_pos.x + cosr_z*this->cam.rot_pos.y -this->cam.zoom*this->cam.rot_pos.z )*OUTPUT_Y_MODIFIER;
+    
+
+    f3point_t i_cam_vec = f3point_t{ sin(this->cam.rotation) , cos(this->cam.rotation) , 1 };
+    const float rsqrt_i_cam_vec = Q_rsqrt( i_cam_vec.x*i_cam_vec.x + i_cam_vec.y*i_cam_vec.y + i_cam_vec.z*i_cam_vec.z );
+    i_cam_vec.x = i_cam_vec.x*rsqrt_i_cam_vec;
+    i_cam_vec.y = i_cam_vec.y*rsqrt_i_cam_vec;
+    i_cam_vec.z = i_cam_vec.z*rsqrt_i_cam_vec;
+    this->cam.pos.x = this->cam.rot_pos.x + i_cam_vec.x*this->cam.pos_rot_pos_dist;
+    this->cam.pos.y = this->cam.rot_pos.y + i_cam_vec.y*this->cam.pos_rot_pos_dist;
+    this->cam.pos.z = this->cam.rot_pos.z + i_cam_vec.z*this->cam.pos_rot_pos_dist;
+
+    f3point_t sun_vec = f3point_t{ 1.5 , 1 , -3.2 };
+    const float rsqrt_sun_vec = Q_rsqrt( sun_vec.x*sun_vec.x + sun_vec.y*sun_vec.y + sun_vec.z*sun_vec.z );
+    sun_vec.x = sun_vec.x*rsqrt_sun_vec;
+    sun_vec.y = sun_vec.y*rsqrt_sun_vec;
+    sun_vec.z = sun_vec.z*rsqrt_sun_vec;
+
+    { //* triangles updating
+        LinkedListNode<model_t>* current_model = this->models;
+        while ( current_model != nullptr ){
+            model_t _model = current_model->getValue();
+            for ( int i = 0; i < _model.triangles_amount; i++ ){
+                f3point_t A;
+                A.x = _model.points[_model.triangles[i].p2].x - _model.points[_model.triangles[i].p1].x;
+                A.y = _model.points[_model.triangles[i].p2].y - _model.points[_model.triangles[i].p1].y;
+                A.z = _model.points[_model.triangles[i].p2].z - _model.points[_model.triangles[i].p1].z;
+                f3point_t B;
+                B.x = _model.points[_model.triangles[i].p3].x - _model.points[_model.triangles[i].p1].x;
+                B.y = _model.points[_model.triangles[i].p3].y - _model.points[_model.triangles[i].p1].y;
+                B.z = _model.points[_model.triangles[i].p3].z - _model.points[_model.triangles[i].p1].z;
+                f3point_t triangle_normal;
+                triangle_normal.x = A.y * B.z - A.z * B.y;
+                triangle_normal.y = A.z * B.x - A.x * B.z;
+                triangle_normal.z = A.x * B.y - A.y * B.x;
+                float rsqrt_triangle_normal = Q_rsqrt( triangle_normal.x*triangle_normal.x + triangle_normal.y*triangle_normal.y + triangle_normal.z*triangle_normal.z );
+                triangle_normal.x = triangle_normal.x*rsqrt_triangle_normal;
+                triangle_normal.y = triangle_normal.y*rsqrt_triangle_normal;
+                triangle_normal.z = triangle_normal.z*rsqrt_triangle_normal;
+
+                _model.triangles[i].normal = triangle_normal;
+                _model.triangles[i].cam_dotproduct = dot_product( &triangle_normal , &i_cam_vec );
+
+                //std::cout << "dp:" << _model.triangles[i].cam_dotproduct << ", i_cam_vec:{" << i_cam_vec.x << "," << i_cam_vec.y << "," << i_cam_vec.z << "}, triangle_normal:{" << triangle_normal.x << "," << triangle_normal.y << "," << triangle_normal.z << "}\n";
+                if ( _model.triangles[i].cam_dotproduct >= 0 ){
+                    _model.triangles[i].shade_value = (-dot_product(&triangle_normal , &sun_vec)+1)*0.5;
+
+                    // calculate distance to camera (without fisheye effect)
+                    f3point_t delta_triangle_cam_vec;
+                    delta_triangle_cam_vec.x = this->cam.pos.x-(_model.points[_model.triangles[i].p1].x+_model.points[_model.triangles[i].p2].x+_model.points[_model.triangles[i].p3].x)*0.3333;
+                    delta_triangle_cam_vec.y = this->cam.pos.y-(_model.points[_model.triangles[i].p1].y+_model.points[_model.triangles[i].p2].y+_model.points[_model.triangles[i].p3].y)*0.3333;
+                    delta_triangle_cam_vec.z = this->cam.pos.z-(_model.points[_model.triangles[i].p1].z+_model.points[_model.triangles[i].p2].z+_model.points[_model.triangles[i].p3].z)*0.3333;
+                    // not changing size to 1
+                    _model.triangles[i].cam_dist = dot_product( &delta_triangle_cam_vec , &i_cam_vec );
+
+                    // sort this triangle
+                    int t = i;
+                    for ( int j = i-1; j >= 0; j-- ){
+                        if ( _model.triangles[j].cam_dotproduct >= 0 && _model.triangles[j].cam_dist > 0 ){
+                            if ( _model.triangles[t].cam_dist > _model.triangles[j].cam_dist ){
+                                triangle_t tmp = _model.triangles[t];
+                                _model.triangles[t] = _model.triangles[j];
+                                _model.triangles[j] = tmp;
+                                t = j;
+                            }else{
+                                j = -1;
+                            };
+                        };
+                    };
+
+                };
+            };
+            current_model = current_model->getNext();
         };
-    */};
+        //*/
+    };
+    { //* triangles drawing
+        LinkedListNode<model_t>* current_model = this->models;
+        while ( current_model != nullptr ){
+            model_t _model = current_model->getValue();
+            for ( int i = 0; i < _model.triangles_amount; i++ ){
+                
+                if ( _model.triangles[i].cam_dotproduct >= 0 && _model.triangles[i].cam_dist > 0 ){
+                    short color = _model.triangles[i].color;
+                    if ( _model.triangles[i].shade_value > 0.93 ){
+                        color = pallete[color].lighter;
+                    }else if( _model.triangles[i].shade_value < 0.71 ){
+                        color = pallete[color].darker;
+                    };
+                    //std::cout << "t:" << i << ", shade:" << _model.triangles[i].shade_value << ", c:" << color << "\n";
+                    SDL_Color triangle_color = pallete[color].color;
+                    // triangle_color.r = triangle_color.r*_model.triangles[i].shade_value;
+                    // triangle_color.g = triangle_color.g*_model.triangles[i].shade_value;
+                    // triangle_color.b = triangle_color.b*_model.triangles[i].shade_value;
+
+                    SDL_Vertex verts[3] = {
+                        SDL_FPoint{
+                            origin_x+ (cosr_z*_model.points[_model.triangles[i].p1].x - sinr_z*_model.points[_model.triangles[i].p1].y)*OUTPUT_X_MODIFIER ,
+                            origin_y+ (sinr_z*_model.points[_model.triangles[i].p1].x + cosr_z*_model.points[_model.triangles[i].p1].y -this->cam.zoom*_model.points[_model.triangles[i].p1].z)*OUTPUT_Y_MODIFIER
+                        }, triangle_color, SDL_FPoint{ 0 , 0 },
+                        SDL_FPoint{
+                            origin_x+ (cosr_z*_model.points[_model.triangles[i].p2].x - sinr_z*_model.points[_model.triangles[i].p2].y)*OUTPUT_X_MODIFIER ,
+                            origin_y+ (sinr_z*_model.points[_model.triangles[i].p2].x + cosr_z*_model.points[_model.triangles[i].p2].y -this->cam.zoom*_model.points[_model.triangles[i].p2].z)*OUTPUT_Y_MODIFIER
+                        }, triangle_color, SDL_FPoint{ 0 , 0 },
+                        SDL_FPoint{
+                            origin_x+ (cosr_z*_model.points[_model.triangles[i].p3].x - sinr_z*_model.points[_model.triangles[i].p3].y)*OUTPUT_X_MODIFIER ,
+                            origin_y+ (sinr_z*_model.points[_model.triangles[i].p3].x + cosr_z*_model.points[_model.triangles[i].p3].y -this->cam.zoom*_model.points[_model.triangles[i].p3].z)*OUTPUT_Y_MODIFIER
+                        }, triangle_color, SDL_FPoint{ 0 , 0 },
+                    };
+                    SDL_RenderGeometry( this->renderer, nullptr, verts, 3, nullptr, 0 );
+                    
+                    // draw triangle's normal
+                    // SDL_RenderDrawLine(this->renderer,
+                    //     (
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p1].x - sinr_z*_model.points[_model.triangles[i].p1].y)*OUTPUT_X_MODIFIER +
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p2].x - sinr_z*_model.points[_model.triangles[i].p2].y)*OUTPUT_X_MODIFIER +
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p3].x - sinr_z*_model.points[_model.triangles[i].p3].y)*OUTPUT_X_MODIFIER
+                    //     )*0.333 ,
+                    //     (
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p1].x + cosr_z*_model.points[_model.triangles[i].p1].y -this->cam.zoom*_model.points[_model.triangles[i].p1].z)*OUTPUT_Y_MODIFIER +
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p2].x + cosr_z*_model.points[_model.triangles[i].p2].y -this->cam.zoom*_model.points[_model.triangles[i].p2].z)*OUTPUT_Y_MODIFIER +
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p3].x + cosr_z*_model.points[_model.triangles[i].p3].y -this->cam.zoom*_model.points[_model.triangles[i].p3].z)*OUTPUT_Y_MODIFIER
+                    //     )*0.333 ,
+                    //     (
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p1].x - sinr_z*_model.points[_model.triangles[i].p1].y)*OUTPUT_X_MODIFIER +
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p2].x - sinr_z*_model.points[_model.triangles[i].p2].y)*OUTPUT_X_MODIFIER +
+                    //         origin_x+ (cosr_z*_model.points[_model.triangles[i].p3].x - sinr_z*_model.points[_model.triangles[i].p3].y)*OUTPUT_X_MODIFIER
+                    //     )*0.333 + (cosr_z*triangle_normal.x - sinr_z*triangle_normal.y)*OUTPUT_X_MODIFIER,
+                    //     (
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p1].x + cosr_z*_model.points[_model.triangles[i].p1].y -this->cam.zoom*_model.points[_model.triangles[i].p1].z)*OUTPUT_Y_MODIFIER +
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p2].x + cosr_z*_model.points[_model.triangles[i].p2].y -this->cam.zoom*_model.points[_model.triangles[i].p2].z)*OUTPUT_Y_MODIFIER +
+                    //         origin_y+ (sinr_z*_model.points[_model.triangles[i].p3].x + cosr_z*_model.points[_model.triangles[i].p3].y -this->cam.zoom*_model.points[_model.triangles[i].p3].z)*OUTPUT_Y_MODIFIER
+                    //     )*0.333 + (sinr_z*triangle_normal.x + cosr_z*triangle_normal.y -this->cam.zoom*triangle_normal.z)*OUTPUT_Y_MODIFIER
+                    // );
+                };
+            };
+            current_model = current_model->getNext();
+        };
+        //*/
+    };
+
+    { /* drawing points
+        SDL_SetRenderDrawColor( this->renderer , 255 , 255 , 255 , 255 );
+        LinkedListNode<model_t>* current_model = this->models;
+        while ( current_model != nullptr ){
+            model_t _model = current_model->getValue();
+            for ( int i = 0; i < _model.points_amount; i++ ){
+                SDL_RenderDrawPoint(this->renderer,
+                    origin_x+ (cosr_z*_model.points[i].x - sinr_z*_model.points[i].y)*OUTPUT_X_MODIFIER ,
+                    origin_y+ (sinr_z*_model.points[i].x + cosr_z*_model.points[i].y -this->cam.zoom*_model.points[i].z)*OUTPUT_Y_MODIFIER
+                );
+            };
+            current_model = current_model->getNext();
+        };
+        //*/
+    };
+    { /* how to draw points
+        for ( int x = -10; x <= 10; x++ ){
+            for ( int y = -10; y <= 10; y++ ){
+                for ( int z = -10; z <= 10; z++ ){
+                    SDL_RenderDrawPoint(this->renderer,
+                        origin_x+ (cosr_z*x - sinr_z*y)*OUTPUT_X_MODIFIER ,
+                        origin_y+ (sinr_z*x + cosr_z*y -this->cam.zoom*z)*OUTPUT_Y_MODIFIER
+                    );
+                };
+            };
+        };
+        //*/
+    };
+    { /* draw axisses
+        // x axis
+        SDL_SetRenderDrawColor( this->renderer , 255 , 0 , 0 , 255 );
+        SDL_RenderDrawLine(this->renderer,
+            origin_x ,
+            origin_y ,
+            origin_x+ (cosr_z)*OUTPUT_X_MODIFIER ,
+            origin_y+ (sinr_z)*OUTPUT_Y_MODIFIER
+        );
+        // y axis
+        SDL_SetRenderDrawColor( this->renderer , 0 , 0 , 255 , 255 );
+        SDL_RenderDrawLine(this->renderer,
+            origin_x ,
+            origin_y ,
+            origin_x+ (-sinr_z)*OUTPUT_X_MODIFIER ,
+            origin_y+ (cosr_z)*OUTPUT_Y_MODIFIER
+        );
+        // z axis
+        SDL_SetRenderDrawColor( this->renderer , 0 , 255 , 0 , 255 );
+        SDL_RenderDrawLine(this->renderer,
+            origin_x ,
+            origin_y ,
+            origin_x ,
+            origin_y+ (-this->cam.zoom)*OUTPUT_Y_MODIFIER
+        );
+        //*/
+    };
     
     
+
+    // drawing canvas to screen
     int pixelSize = std::min( this->parentWindow->width/OUTPUT_CANVAS_WIDTH , this->parentWindow->height/OUTPUT_CANVAS_HEIGHT );
     int topLeftX = ( this->parentWindow->width - pixelSize*OUTPUT_CANVAS_WIDTH )/2;
     int topLeftY = ( this->parentWindow->height - pixelSize*OUTPUT_CANVAS_HEIGHT )/2;
@@ -220,57 +304,43 @@ void App::Render(){
 };
 
 void App::Update(){
-    if ( this->keys['A'] == true || this->keys['a'] == true ){
-        this->cam.x += cos(this->cam.z+M_PI);
-        this->cam.y += sin(this->cam.z+M_PI);
+    if ( this->key_space ){
+        this->cam.rot_pos.z += 1/this->cam.zoom;
     };
-    if ( this->keys['D'] == true || this->keys['d'] == true ){
-        this->cam.x += cos(this->cam.z);
-        this->cam.y += sin(this->cam.z);
+    if ( this->key_lshift ){
+        this->cam.rot_pos.z -= 1/this->cam.zoom;
     };
-    if ( this->keys['W'] == true || this->keys['w'] == true ){
-        this->cam.x += cos(this->cam.z-M_PI_2);
-        this->cam.y += sin(this->cam.z-M_PI_2);
+    if ( this->keys['a'] || this->keys['A'] ){
+        this->cam.rot_pos.x += sin(this->cam.rotation+M_PI_2*3)/this->cam.zoom;
+        this->cam.rot_pos.y += cos(this->cam.rotation+M_PI_2*3)/this->cam.zoom;
     };
-    if ( this->keys['S'] == true || this->keys['s'] == true ){
-        this->cam.x += cos(this->cam.z+M_PI_2);
-        this->cam.y += sin(this->cam.z+M_PI_2);
+    if ( this->keys['d'] || this->keys['D'] ){
+        this->cam.rot_pos.x += sin(this->cam.rotation+M_PI_2)/this->cam.zoom;
+        this->cam.rot_pos.y += cos(this->cam.rotation+M_PI_2)/this->cam.zoom;
     };
-    if ( this->right == true ){
-        this->cam.z -= M_PI/180;
-        if ( this->cam.z < 0 ){ this->cam.z += M_PI*2; };
+    if ( this->keys['w'] || this->keys['W'] ){
+        this->cam.rot_pos.x += sin(this->cam.rotation+M_PI)/this->cam.zoom;
+        this->cam.rot_pos.y += cos(this->cam.rotation+M_PI)/this->cam.zoom;
     };
-    if ( this->left == true ){
-        this->cam.z += M_PI/180;
-        if ( this->cam.z >= M_PI*2 ){ this->cam.z -= M_PI*2; };
+    if ( this->keys['S'] || this->keys['S'] ){
+        this->cam.rot_pos.x += sin(this->cam.rotation)/this->cam.zoom;
+        this->cam.rot_pos.y += cos(this->cam.rotation)/this->cam.zoom;
     };
-    /*
-    this->points[8] = this->cam;
-    this->points[8].z = 0;
-    //right
-    this->points[9].x = this->cam.x+cos(this->cam.z)*VIEWPORT_HEIGHT/2+cos(this->cam.z);
-    this->points[9].y = this->cam.y+sin(this->cam.z)*VIEWPORT_HEIGHT/2+sin(this->cam.z);
-    //down
-    this->points[10].x = this->cam.x+cos(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2);
-    this->points[10].y = this->cam.y+sin(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2);
-    //left
-    this->points[11].x = this->cam.x+cos(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI);
-    this->points[11].y = this->cam.y+sin(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI);
-    //up
-    this->points[12].x = this->cam.x+cos(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2*3);
-    this->points[12].y = this->cam.y+sin(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2*3);
-    //right down
-    this->points[13].x = this->cam.x+cos(this->cam.z)*VIEWPORT_HEIGHT/2+cos(this->cam.z)+cos(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2);
-    this->points[13].y = this->cam.y+sin(this->cam.z)*VIEWPORT_HEIGHT/2+sin(this->cam.z)+sin(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2);
-    //left down
-    this->points[14].x = this->cam.x+cos(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI)+cos(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2);
-    this->points[14].y = this->cam.y+sin(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI)+sin(this->cam.z+M_PI_2)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2);
-    //right up
-    this->points[15].x = this->cam.x+cos(this->cam.z)*VIEWPORT_HEIGHT/2+cos(this->cam.z)+cos(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2*3);
-    this->points[15].y = this->cam.y+sin(this->cam.z)*VIEWPORT_HEIGHT/2+sin(this->cam.z)+sin(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2*3);
-    //left up
-    this->points[16].x = this->cam.x+cos(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI)+cos(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+cos(this->cam.z+M_PI_2*3);
-    this->points[16].y = this->cam.y+sin(this->cam.z+M_PI)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI)+sin(this->cam.z+M_PI_2*3)*VIEWPORT_HEIGHT/2+sin(this->cam.z+M_PI_2*3);
-    */
+    if ( this->key_right ){
+        this->cam.rotation -= M_PI/180;
+        if ( this->cam.rotation < 0 ){ this->cam.rotation += M_PI*2; };
+    };
+    if ( this->key_left ){
+        this->cam.rotation += M_PI/180;
+        if ( this->cam.rotation >= M_PI*2 ){ this->cam.rotation -= M_PI*2; };
+    };
+    if ( this->key_up ){
+        this->cam.zoom += this->cam.zoom*0.05;
+        if ( this->cam.zoom > 10 ){ this->cam.zoom = 10; };
+    };
+    if ( this->key_down ){
+        this->cam.zoom -= this->cam.zoom*0.05;
+        if ( this->cam.zoom < 0.1 ){ this->cam.zoom = 0.1; };
+    };
     return;
 };
